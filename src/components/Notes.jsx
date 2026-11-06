@@ -2,6 +2,22 @@ import NoteCard from './NoteCard.jsx'
 import { useState } from 'react'
 
 function Notes() {
+
+    const [formData, setFormData] = useState({
+        title: '',
+        body: ''
+    })
+
+    // One function handles changes in both inputs
+    function handleChange(event) {
+        const { name, value } = event.target
+
+        setFormData({
+            ...formData,
+            [name]: value
+        })
+    }
+
     const [notes, setNotes] = useState([
     {
             id: 1,
@@ -35,11 +51,15 @@ function Notes() {
                 <input
                     name="title"
                     placeholder="Title"
+                    value={formData.title}
+                    onChange={handleChange}
                     className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
                 />
                 <textarea
                     name="body"
                     placeholder="Write your note"
+                    value={formData.body}
+                    onChange={handleChange}
                     className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
                 />
                 <button
