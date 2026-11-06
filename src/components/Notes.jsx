@@ -8,7 +8,6 @@ function Notes() {
         body: ''
     })
 
-    // One function handles changes in both inputs
     function handleChange(event) {
         const { name, value } = event.target
 
@@ -17,6 +16,30 @@ function Notes() {
             [name]: value
         })
     }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+
+        const title = formData.title.trim()
+        const body = formData.body.trim()
+
+        if (!title || !body) {
+            return
+        }
+
+        const newNote = {
+            id: Math.max(0, ...notes.map(note => note.id)) + 1,
+            title,
+            body
+        }
+
+    setNotes([...notes, newNote])
+
+    setFormData({
+        title: '',
+        body: ''
+    })
+}
 
     const [notes, setNotes] = useState([
     {
@@ -46,7 +69,7 @@ function Notes() {
                 />
             </div>
  
-            <form className="grid gap-3">
+            <form className="grid gap-3" onSubmit={handleSubmit}>
                 <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
                 <input
                     name="title"
