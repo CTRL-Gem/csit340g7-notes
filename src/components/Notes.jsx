@@ -1,5 +1,5 @@
 import NoteCard from './NoteCard.jsx'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
 const startingNotes = [
     {
@@ -60,14 +60,14 @@ function Notes() {
     titleRef.current?.focus()
 }
 
-        function handleDelete(id) {
-            setNotes(notes.filter(note => note.id !== id))
-        }
-
     const [notes, setNotes] = useState(() => {
         const saved = localStorage.getItem('notes')
         return saved ? JSON.parse(saved) : startingNotes
     })
+
+        const handleDelete = useCallback((id) => {
+            setNotes(notes.filter(note => note.id !== id))
+        }, [notes])
 
     useEffect(() => {
         localStorage.setItem('notes', JSON.stringify(notes))
@@ -82,7 +82,6 @@ function Notes() {
     }, [formData])
 
     const filteredNotes = useMemo(() => {
-        console.log('filtering')
         return notes.filter((note) =>
             note.title.toLowerCase().includes(search.toLowerCase())
         )
@@ -143,14 +142,8 @@ function Notes() {
                 <NoteCard
                         title={note.title}
                         body={note.body}
+                        onDelete={() => handleDelete(note.id)}
                     />
-                        <button
-                            type="button"
-                            onClick={() => handleDelete(note.id)}
-                            className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
-                        >
-                        ×
-                    </button>
                 </li>
             ))}
             </ul>
