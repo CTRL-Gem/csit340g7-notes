@@ -1,5 +1,5 @@
 import NoteCard from './NoteCard.jsx'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 const startingNotes = [
     {
@@ -22,6 +22,7 @@ function Notes() {
         title: '',
         body: ''
     })
+
     const titleRef = useRef(null)
 
     function handleChange(event) {
@@ -56,7 +57,7 @@ function Notes() {
         body: ''
     })
 
-    titleRef.current.focus()
+    titleRef.current?.focus()
 }
 
         function handleDelete(id) {
@@ -75,14 +76,17 @@ function Notes() {
     useEffect(() => {
         const id = setTimeout(() => {
             localStorage.setItem('draft', JSON.stringify(formData))
-            console.log('draft saved:', formData.title)
         }, 1000)
+
         return () => clearTimeout(id)
     }, [formData])
 
-    const filteredNotes = notes.filter(note =>
-        note.title.toLowerCase().includes(search.toLowerCase())
-    )
+    const filteredNotes = useMemo(() => {
+        console.log('filtering')
+        return notes.filter((note) =>
+            note.title.toLowerCase().includes(search.toLowerCase())
+        )
+    }, [notes, search])
 
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
