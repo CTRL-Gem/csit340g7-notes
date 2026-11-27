@@ -5,8 +5,12 @@ import Info from './components/Info.jsx'
 
 function App() {
   const [largeText, setLargeText] = useState(() => {
-    const saved = localStorage.getItem('largeText')
-    return saved ? JSON.parse(saved) : false
+    try {
+      const saved = localStorage.getItem('largeText')
+      return saved !== null ? JSON.parse(saved) === true : false
+    } catch {
+      return false
+    }
   })
 
   useEffect(() => {
@@ -14,15 +18,8 @@ function App() {
   }, [largeText])
 
   return (
-    <SettingsContext.Provider value={{ largeText }}>
+    <SettingsContext.Provider value={{ largeText, setLargeText }}>
       <div className="bg-[#f5f5f5] font-light text-[#111]">
-        <button
-          type="button"
-          onClick={() => setLargeText(!largeText)}
-          className="fixed top-7 right-8 z-10 cursor-pointer text-[13px] text-[#949494] underline"
-        >
-          {largeText ? 'Normal text' : 'Large text'}
-        </button>
         <Notes />
         <Info name="Deanne Romar R. Gemal" />
       </div>
