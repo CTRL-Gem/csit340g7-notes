@@ -1,22 +1,12 @@
 import NoteCard from './NoteCard.jsx'
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
-const startingNotes = [
-    {
-        id: 1,
-        title: "Review map and filter",
-        body: "Redo the TodoMVC steps without looking at the guide."
-    },
-    {
-        id: 2,
-        title: "Prepare for the quiz",
-        body: "Practice writing one handler for many inputs."
-    }
-]
+const API_URL = import.meta.env.VITE_API_URL
 
 function Notes() {
 
     const [search, setSearch] = useState('')
+    const [notes, setNotes] = useState([])
 
     const [formData, setFormData] = useState(() => {
         const saved = localStorage.getItem('draft')
@@ -60,18 +50,19 @@ function Notes() {
     titleRef.current?.focus()
 }
 
-    const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('notes')
-        return saved ? JSON.parse(saved) : startingNotes
-    })
-
         const handleDelete = useCallback((id) => {
             setNotes(notes.filter(note => note.id !== id))
         }, [notes])
 
     useEffect(() => {
-        localStorage.setItem('notes', JSON.stringify(notes))
-    }, [notes])
+        async function loadNotes() {
+      const res = await fetch(API_URL + '/notes')
+      const data = await res.json()
+      setNotes(data)
+    }
+ 
+    loadNotes()
+  }, [])
 
     useEffect(() => {
         const id = setTimeout(() => {
